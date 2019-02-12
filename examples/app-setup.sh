@@ -11,6 +11,7 @@ DIR=`dirname "$0"`
 cd $DIR
 export FLASK_APP=app.py
 
+pip install -r requirements.txt
 # Next, we copy the static files from the Python packages into the Flask
 # application's static folder
 flask collect -v

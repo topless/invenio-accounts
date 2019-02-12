@@ -1,3 +1,4 @@
 invenio-theme>=1.0.0a14
 invenio-assets>=1.0.0b2
 invenio-admin>=1.0.0a3
+invenio-db>=1.0.2
