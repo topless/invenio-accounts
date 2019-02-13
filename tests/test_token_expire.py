@@ -8,27 +8,28 @@
 
 """Test token expire duration."""
 
-import pytest
-from flask import current_app
+# import pytest
 
-from flask_security.confirmable import generate_confirmation_token
-from flask_security.utils import get_token_status
-
-
-class User():
-    def __init__(self, id, email):
-        self.id = id
-        self.email = email
+from flask_security import url_for_security
+from flask_security.recoverable import generate_reset_password_token
 
 
-@pytest.mark.settings(reset_password_within='1 milliseconds')
-def test_reset_password_token(client, users):
+# @pytest.mark.parametrize("duration,expected", [(2, True), (5, False)])
+def test_forgot_password_token(app, users):
     """."""
-    current_app.config['SECURITY_RESET_PASSWORD_WITHIN'] = '1 milliseconds'
-    user = User(id=users[0]['id'], email=users[0]['email'])
-    token = generate_confirmation_token(user)
-    expired, invalid, user = get_token_status(
-        token, 'reset', 'RESET_PASSWORD'
-    )
+    ds = app.extensions['invenio-accounts'].datastore
+    with app.app_context():
+        user = ds.create_user(
+            email='info@inveniosoftware.org', password='1234', active=True
+        )
+        token = generate_reset_password_token(user)
+        reset_link = url_for_security('reset_password', token=token)
+
+    with app.test_client() as client:
+        # 1) test case: wait x secs
+        # 2) test caseL no wait
+        res = client.get(reset_link)
+        # tres.get_text()
+        # resp = client.get(forgot_password_url, follow_redirects=True)
     import ipdb
     ipdb.set_trace()
